@@ -20,7 +20,14 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        conda env update --file environment.yml --name base
+       . scl_source enable devtoolset-7 || true
+        . scl_source enable llvm-toolset-6.0 || true
+        . /etc/profile.d/modules.sh || true
+        module load mpi
+        . $INSTALL_DIR/bin/thisbdm.sh
+        git config --system user.name "Test User"
+        git config --system user.email user@test.com
+        xvfb-run -d -s "-screen 0 2560x1440x24" make run-demos
     - name: Lint with flake8
       run: |
         conda install flake8
